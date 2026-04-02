@@ -1,0 +1,26 @@
+{
+  "name": "financial_tracking",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx -r dotenv/config --watch src/index.ts",
+    "start": "npx tsx -r dotenv/config src/index.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "dotenv": "^17.4.0",
+    "telegraf": "^4.16.3",
+    "ts-node-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.6.0",
+    "tsx": "^4.21.0"
+  }
+}
