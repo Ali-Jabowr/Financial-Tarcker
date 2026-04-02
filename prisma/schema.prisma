@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 2. Tell Prisma to generate the TypeScript code
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  telegramId BigInt   @unique
+  firstName  String?
+  username   String?
+  createdAt  DateTime @default(now())
+  lastActive DateTime?
+  
+  // A User can have many transactions
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  amount      Float
+  category    String
+  description String?
+  type        String   // 'income' or 'expense'
+  createdAt   DateTime @default(now())
+
+  // Link to the User
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+}
