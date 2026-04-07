@@ -15,7 +15,21 @@ export class UserController {
     }
 
 
-    static async handleAddExpenseCommand(telegramId: number, amount: number, description: string, category: string) {
+    static async handleAddExpenseCommand(ctx: any) {
+        const telegramId = ctx.from.id;
+        const args = ctx.message.text.split(' ').slice(1);
+        if (args.length < 2) {
+            ctx.reply("Usage: /addexpense <amount> <description>");
+            return;
+        }
+        const amount = parseFloat(args[0]);
+        const description = args[1];
+        const category = args[2] || "General";
+        console.log(`args: ${category}`);
+        if (isNaN(amount) || amount <= 0 ) {
+            ctx.reply("Please provide a valid amount.");
+            return;
+        }
         
         const transaction ={
             telegramId,
@@ -23,10 +37,12 @@ export class UserController {
             description,
             category
         }
+
         try {
             await createTransaction(transaction);
+            ctx.reply(`Expense added: ${amount} - ${description} - ${category}`);
         } catch (error) {
-            console.error("Error creating transaction:", error);
+            ctx.reply("Failed to add expense. Please try again later.");
             throw new Error("Failed to create transaction");
         }
     
