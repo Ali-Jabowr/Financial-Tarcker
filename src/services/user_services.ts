@@ -17,12 +17,13 @@ export const createTransaction = async (transaction: {
   telegramId: number;
   amount: number;
   description?: string;
+  category?: string;
 }) => {
   return prisma.transaction.create({
     data: {
       user: {connect: { telegramId: BigInt(transaction.telegramId) }},
       amount: transaction.amount,
-      category: "General",
+      category: transaction.category || "General",
       description: transaction.description || "No description",
     }
   });

@@ -15,14 +15,20 @@ export class UserController {
     }
 
 
-    static async handleAddExpenseCommand(telegramId: number, amount: number, description: string) {
+    static async handleAddExpenseCommand(telegramId: number, amount: number, description: string, category: string) {
         
         const transaction ={
             telegramId,
             amount,
-            description
+            description,
+            category
         }
-        await createTransaction(transaction);
+        try {
+            await createTransaction(transaction);
+        } catch (error) {
+            console.error("Error creating transaction:", error);
+            throw new Error("Failed to create transaction");
+        }
     
 
     }
