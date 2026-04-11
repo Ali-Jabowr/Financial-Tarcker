@@ -14,14 +14,14 @@ export const upsertUser = async (user: {
 
 
 export const createTransaction = async (transaction: {
-  telegramId: number;
+  telegramId: bigint;
   amount: number;
   description?: string;
   category?: string;
 }) => {
   return prisma.transaction.create({
     data: {
-      user: {connect: { telegramId: BigInt(transaction.telegramId) }},
+      user: {connect: { telegramId: transaction.telegramId }},
       amount: transaction.amount,
       category: transaction.category || "General",
       description: transaction.description || "No description",

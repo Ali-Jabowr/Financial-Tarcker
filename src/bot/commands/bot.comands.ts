@@ -11,10 +11,10 @@ export const setupCommands = (bot: Telegraf<Context>) => {
 
 
 
-export const startCommand = async (ctx: any) => {
+export const startCommand = async (ctx: Context) => {
     await UserController.handleStartCommand(ctx)
 }
 
-export const addExpenseCommand = async (ctx: any) => {
+export const addExpenseCommand = async (ctx: Context) => {
     await UserController.handleAddExpenseCommand(ctx)
 }
