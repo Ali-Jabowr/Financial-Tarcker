@@ -1,6 +1,6 @@
 import {bot} from "./config/bot.js";
 
-import { setupCommands } from "./bot/commands/bot.comands.js";
+import { setupCommands } from "./bot/commands/bot.commands.js";
 
 setupCommands(bot);
 
