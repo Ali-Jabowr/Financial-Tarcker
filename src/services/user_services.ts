@@ -1,10 +1,8 @@
 import {prisma} from '../lib/prisma.js';
+import type { UserInterface } from '../models/addUser.js';
+import type { CreateTransactionInput } from '../models/createTransactionInput.js';
 
-export const upsertUser = async (user: {
-  telegramId: bigint;
-  name: string;
-  username?: string;  
-}) => {
+export const upsertUser = async (user: UserInterface) => {
   return prisma.user.upsert({
     where: { telegramId: user.telegramId },
     update: { firstName: user.name },
@@ -13,12 +11,7 @@ export const upsertUser = async (user: {
 };
 
 
-export const createTransaction = async (transaction: {
-  telegramId: bigint;
-  amount: number;
-  description?: string;
-  category?: string;
-}) => {
+export const createTransaction = async (transaction : CreateTransactionInput) => {
   return prisma.transaction.create({
     data: {
       user: {connect: { telegramId: transaction.telegramId }},
@@ -28,3 +21,4 @@ export const createTransaction = async (transaction: {
     }
   });
 };
+
