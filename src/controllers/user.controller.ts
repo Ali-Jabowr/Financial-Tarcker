@@ -38,7 +38,6 @@ export class UserController {
         const amount = parseFloat(args[0]!);
         const description = args[1]!;
         const category = args[2] || "General";
-        console.log(`args: ${category}`);
         if (isNaN(amount) || amount <= 0 ) {
             ctx.reply("Please provide a valid amount.");
             return;
@@ -55,8 +54,8 @@ export class UserController {
             await createTransaction(transaction);
             ctx.reply(`Expense added: ${amount} - ${description} - ${category}`);
         } catch (error) {
+            console.error("Error adding expense:", error);
             ctx.reply("Failed to add expense. Please try again later.");
-            throw new Error("Failed to create transaction");
         }
     
 
