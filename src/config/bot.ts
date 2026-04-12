@@ -1,5 +1,3 @@
-import * as dotenv from "dotenv";
-dotenv.config();
 import { Telegraf } from "telegraf";
 import { SocksProxyAgent } from 'socks-proxy-agent';
 
