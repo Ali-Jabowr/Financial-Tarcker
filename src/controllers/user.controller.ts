@@ -37,12 +37,16 @@ export class UserController {
         }
         const telegramId = BigInt(ctx.from.id);
         const amount = parseFloat(args[0]!);
-        const description = args.slice(1).join(' ');
+        const description = args.slice(1).join(' ').trim();
         const category = "General";
         const type = TransactionType.EXPENSE
         
-        if (isNaN(amount) || amount <= 0 ) {
+        if (isNaN(amount) || amount <= 0 || amount > 1000000 ) {
             ctx.reply("Please provide a valid amount.");
+            return;
+        }
+        if (!description) {
+            ctx.reply("Please provide a description.");
             return;
         }
         
@@ -80,11 +84,15 @@ export class UserController {
             }
             const telegramId = BigInt(ctx.from.id);
             const amount = parseFloat(args[0]!);
-            const description = args.slice(1).join(' ');
+            const description = args.slice(1).join(' ').trim();
             const category = "General";
             const type = TransactionType.INCOME
-            if (isNaN(amount) || amount <= 0 ) {
+            if (isNaN(amount) || amount <= 0 || amount > 1000000 ) {
                 ctx.reply("Please provide a valid amount.");
+                return;
+            }
+            if (!description) {
+                ctx.reply("Please provide a description.");
                 return;
             }
             
