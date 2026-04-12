@@ -1,5 +1,6 @@
 import { createTransaction, getUserTransactions, upsertUser } from "../services/user_services.js";
 import { Context } from 'telegraf';
+import {TransactionType} from '../../generated/prisma/enums.js' 
 
 
 export class UserController {
@@ -38,6 +39,8 @@ export class UserController {
         const amount = parseFloat(args[0]!);
         const description = args.slice(1).join(' ');
         const category = "General";
+        const type = TransactionType.EXPENSE
+        
         if (isNaN(amount) || amount <= 0 ) {
             ctx.reply("Please provide a valid amount.");
             return;
@@ -47,7 +50,8 @@ export class UserController {
             telegramId,
             amount,
             description,
-            category
+            category,
+            type
         }
 
         try {
@@ -59,7 +63,50 @@ export class UserController {
         }
     }
 
-    public static async handleReportCommand(ctx: Context) {
+
+    static async handleIncomeCommand(ctx: Context) {
+            if (!ctx.from) {
+                ctx.reply("Unable to identify user. Please try again.");
+                return;
+            }
+            if (!ctx.message || !('text' in ctx.message)) {
+                ctx.reply("Invalid command format. Please use: /addincome <amount> <description>");
+                return;
+            }
+            const args = ctx.message.text.split(' ').slice(1);
+            if (args.length < 2) {
+                ctx.reply("Usage: /addincome <amount> <description>");
+                return;
+            }
+            const telegramId = BigInt(ctx.from.id);
+            const amount = parseFloat(args[0]!);
+            const description = args.slice(1).join(' ');
+            const category = "General";
+            const type = TransactionType.INCOME
+            if (isNaN(amount) || amount <= 0 ) {
+                ctx.reply("Please provide a valid amount.");
+                return;
+            }
+            
+            const transaction ={
+                telegramId,
+                amount,
+                description,
+                category,
+                type
+            }
+
+            try {
+                await createTransaction(transaction);
+                ctx.reply(`Income added: ${amount} - ${description}`);
+            } catch (error) {
+                console.error("Error adding Income:", error);
+                ctx.reply("Failed to add Income. Please try again later.");
+            }
+        }
+
+
+    static async handleReportCommand(ctx: Context) {
         if (!ctx.from) {
             ctx.reply("Unable to identify user. Please try again.");
             return;
@@ -72,13 +119,20 @@ export class UserController {
                 ctx.reply("No transactions found.");
                 return;
             }
-            const total = transactions.reduce((sum, t) => sum + t.amount, 0)
             const totalTransactions = transactions.length
-            const line = transactions.map(t => ` - ${t.amount.toFixed(2)} -- ${t.description}`).join("\n");
+            const expenses = transactions.filter(t => t.type === TransactionType.EXPENSE)
+            const incomes  = transactions.filter(t => t.type === TransactionType.INCOME )
+
+            const totalExpenses = expenses.reduce((sum, t) => sum + t.amount, 0)
+            const totalIncomes = incomes.reduce((sum, t) => sum + t.amount, 0)
+            const line = transactions.map(t => ` - ${t.type} ${t.amount.toFixed(2)} -- ${t.description}`).join("\n");
+            const net = totalIncomes - totalExpenses;
             ctx.reply(
-                `Total spent: ${total.toFixed(2)}\n`+
-                `Transactions: ${totalTransactions} \n` +
-                `Recent:\n ${line}`
+                `Income: ${totalIncomes.toFixed(2)}\n` +
+                `Expenses: ${totalExpenses.toFixed(2)}\n` +
+                `Net: ${net.toFixed(2)}\n\n` +
+                `Last: ${totalTransactions}\n` +
+                `transactions:\n ${line}` 
             )
        } 
        catch(error){

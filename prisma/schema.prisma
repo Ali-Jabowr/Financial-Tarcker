@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+  
 model User {
   id           Int           @id @default(autoincrement())
   telegramId   BigInt        @unique
@@ -18,7 +19,6 @@ model User {
   username     String?
   createdAt    DateTime      @default(now())
   
-  // ADD THIS LINE BELOW:
   transactions Transaction[] 
 }
 
@@ -30,4 +30,10 @@ model Transaction {
   createdAt   DateTime @default(now())
   userId      Int
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type TransactionType @default(EXPENSE)
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
 }

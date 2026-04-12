@@ -18,6 +18,7 @@ export const createTransaction = async (transaction : CreateTransactionInput) =>
       amount: transaction.amount,
       category: transaction.category || "General",
       description: transaction.description || "No description",
+      ...(transaction.type && {type: transaction.type})
     }
   });
 };
