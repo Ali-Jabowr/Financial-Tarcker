@@ -1,4 +1,4 @@
-import { createTransaction, upsertUser } from "../services/user_services.js";
+import { createTransaction, getUserTransactions, upsertUser } from "../services/user_services.js";
 import { Context } from 'telegraf';
 
 
@@ -52,12 +52,38 @@ export class UserController {
 
         try {
             await createTransaction(transaction);
-            ctx.reply(`Expense added: ${amount} - ${description}}`);
+            ctx.reply(`Expense added: ${amount} - ${description}`);
         } catch (error) {
             console.error("Error adding expense:", error);
             ctx.reply("Failed to add expense. Please try again later.");
         }
-    
+    }
 
+    public static async handleReportCommand(ctx: Context) {
+        if (!ctx.from) {
+            ctx.reply("Unable to identify user. Please try again.");
+            return;
+        }
+
+        const telegramId = BigInt(ctx.from.id);
+        try{
+            const transactions = await getUserTransactions(telegramId);
+            if(transactions.length === 0){
+                ctx.reply("No transactions found.");
+                return;
+            }
+            const total = transactions.reduce((sum, t) => sum + t.amount, 0)
+            const totalTransactions = transactions.length
+            const line = transactions.map(t => ` - ${t.amount.toFixed(2)} -- ${t.description}`).join("\n");
+            ctx.reply(
+                `Total spent: ${total.toFixed(2)}\n`+
+                `Transactions: ${totalTransactions} \n` +
+                `Recent:\n ${line}`
+            )
+       } 
+       catch(error){
+        console.error("Error get transacitons: ", error);
+        ctx.reply("Failed to get transaction. please try again later")
+       }
     }
 }

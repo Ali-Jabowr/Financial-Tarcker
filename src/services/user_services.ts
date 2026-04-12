@@ -22,3 +22,12 @@ export const createTransaction = async (transaction : CreateTransactionInput) =>
   });
 };
 
+export const getUserTransactions = async (telegramId: bigint) => {
+  return prisma.transaction.findMany({
+    where: {user: {telegramId}},
+    orderBy: { createdAt: 'desc' },
+    take: 10
+  });
+
+}
+

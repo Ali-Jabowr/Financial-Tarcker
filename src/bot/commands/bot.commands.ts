@@ -5,7 +5,7 @@ export const setupCommands = (bot: Telegraf<Context>) => {
     // Mapping the "Trigger" to the "Controller Method"
     bot.start(startCommand);
     bot.command('addexpense', addExpenseCommand);
-    // bot.command('report', UserController.han);
+    bot.command('report', reportCommand );
     // bot.command('help', (ctx) => ctx.reply("Send me: /addexpense <amount> <desc>"));
 };
 
@@ -17,4 +17,8 @@ export const startCommand = async (ctx: Context) => {
 
 export const addExpenseCommand = async (ctx: Context) => {
     await UserController.handleAddExpenseCommand(ctx)
+}
+
+export const reportCommand = async (ctx: Context) => {
+    await UserController.handleReportCommand(ctx)
 }
