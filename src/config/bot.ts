@@ -13,6 +13,6 @@ if (!token) {
 const agent = proxyUrl ? new SocksProxyAgent(proxyUrl) : undefined;
 
 export const bot = new Telegraf(token, {
-  telegram: { agent }
+  telegram: { ...(agent && { agent }) }
 });
 

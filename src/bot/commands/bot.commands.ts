@@ -7,6 +7,7 @@ export const setupCommands = (bot: Telegraf<Context>) => {
     bot.command('addexpense', addExpenseCommand);
     bot.command('addincome', addIncomeCommand);
     bot.command('report', reportCommand );
+    bot.command('help', helpCommand);
 };
 
 
@@ -25,4 +26,14 @@ export const reportCommand = async (ctx: Context) => {
 
 export const addIncomeCommand = async (ctx: Context) => {
     await UserController.handleIncomeCommand(ctx)
+}
+
+export const helpCommand = async (ctx: Context) => {
+    ctx.reply(
+        "Available commands:\n\n" +
+        "/addexpense <amount> <description> — Record an expense\n" +
+        "/addincome <amount> <description> — Record income\n" +
+        "/report — View your financial summary\n" +
+        "/help — Show this message"
+    );
 }
