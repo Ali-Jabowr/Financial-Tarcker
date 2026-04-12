@@ -1,6 +1,7 @@
 import { createTransaction, getUserTransactions, upsertUser } from "../services/user_services.js";
 import { Context } from 'telegraf';
-import {TransactionType} from '../../generated/prisma/enums.js' 
+import {TransactionType} from '../../generated/prisma/enums.js'
+import { logger } from '../lib/logger.js';
 
 
 export class UserController {
@@ -15,7 +16,7 @@ export class UserController {
             ...ctx.from.username && {username: ctx.from.username}
         }
         await upsertUser(user);
-        console.log("Received /start command from user:", ctx.from.username || ctx.from.id);
+        logger.info(`Received /start command from user: ${ctx.from.username || ctx.from.id}`);
         const userFirstName = ctx.from.first_name || "there";
         ctx.reply(`Welcome, ${userFirstName}! I'm your friendly bot. How can I assist you today?`);
     }
@@ -62,7 +63,7 @@ export class UserController {
             await createTransaction(transaction);
             ctx.reply(`Expense added: ${amount} - ${description}`);
         } catch (error) {
-            console.error("Error adding expense:", error);
+            logger.error("Error adding expense", error);
             ctx.reply("Failed to add expense. Please try again later.");
         }
     }
@@ -108,7 +109,7 @@ export class UserController {
                 await createTransaction(transaction);
                 ctx.reply(`Income added: ${amount} - ${description}`);
             } catch (error) {
-                console.error("Error adding Income:", error);
+                logger.error("Error adding income", error);
                 ctx.reply("Failed to add Income. Please try again later.");
             }
         }
@@ -144,7 +145,7 @@ export class UserController {
             )
        } 
        catch(error){
-        console.error("Error get transacitons: ", error);
+        logger.error("Error fetching transactions", error);
         ctx.reply("Failed to get transaction. please try again later")
        }
     }
