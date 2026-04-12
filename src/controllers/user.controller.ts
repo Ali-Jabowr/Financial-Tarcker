@@ -36,8 +36,8 @@ export class UserController {
         }
         const telegramId = BigInt(ctx.from.id);
         const amount = parseFloat(args[0]!);
-        const description = args[1]!;
-        const category = args[2] || "General";
+        const description = args.slice(1).join(' ');
+        const category = "General";
         if (isNaN(amount) || amount <= 0 ) {
             ctx.reply("Please provide a valid amount.");
             return;
@@ -52,7 +52,7 @@ export class UserController {
 
         try {
             await createTransaction(transaction);
-            ctx.reply(`Expense added: ${amount} - ${description} - ${category}`);
+            ctx.reply(`Expense added: ${amount} - ${description}}`);
         } catch (error) {
             console.error("Error adding expense:", error);
             ctx.reply("Failed to add expense. Please try again later.");
